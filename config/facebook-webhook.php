@@ -13,7 +13,7 @@ return [
              * We expect that every webhook call will be signed using a secret. This secret
              * is used to verify that the payload has not been tampered with.
              */
-            'signing_secret' => env('FACEBOOK_APP_SECRET'),
+            'signing_secret' => env('FACEBOOK_CLIENT_SECRET'),
 
             /*
              * The name of the header containing the signature.
@@ -68,12 +68,12 @@ return [
             /*
              * The App ID from the Facebook App.
              */
-            'app_id' => env('FACEBOOK_APP_ID'),
+            'app_id' => env('FACEBOOK_CLIENT_ID'),
 
             /*
              * The App Secret from the Facebook App.
              */
-            'app_secret' => env('FACEBOOK_APP_SECRET'),
+            'app_secret' => env('FACEBOOK_CLIENT_SECRET'),
 
             /*
              * The Page ID to retrieve the leads from.

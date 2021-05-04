@@ -30,14 +30,14 @@ To create the table that holds the webhook calls, you must publish the migration
 php artisan vendor:publish --provider="Spatie\WebhookClient\WebhookClientServiceProvider" --tag="migrations"
 ```
 
-Please see the [Base Installation Guide](https://socialiteproviders.com/usage/), then follow the provider specific instructions below, please note: The envirionment variables are not named the same as on Socialite
+Please see the [Base Installation Guide](https://socialiteproviders.com/usage/), then follow the provider specific instructions below.
 
 ### Add configuration to `config/services.php`
 
 ```php
 'facebook' => [
-  'client_id' => env('FACEBOOK_APP_ID'),
-  'client_secret' => env('FACEBOOK_APP_SECRET'),
+  'client_id' => env('FACEBOOK_CLIENT_ID'),
+  'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
   'redirect' => env('FACEBOOK_REDIRECT_URI')
 ],
 ```
@@ -58,13 +58,13 @@ Make sure to have the following .env variables setup:
 
 ```php
 FACEBOOK_CALLBACK_ROUTE= #Default set 'webhook-client-facebook-lead'
-FACEBOOK_APP_ID=
-FACEBOOK_APP_SECRET=
+FACEBOOK_CLIENT_ID=
+FACEBOOK_CLIENT_SECRET=
 FACEBOOK_PAGE_ID=
 FACEBOOK_REDIRECT_URI= #'/auth/facebook'
 ```
 
-## Usage
+## Setup
 
 Create an Facebook app using the following instructions from [Facebook](https://developers.facebook.com/docs/development/register), make sure your app has the following permissions:
 A Page or User access token requested by a person who can advertise on the ad account and on the Page
@@ -81,7 +81,11 @@ After setting up the migrations and the .env, run:
 php artisan marshmallow:setup-facebook
 ```
 
+## Usage
+
+This package uses [spatie/laravel-webhook-client](https://github.com/spatie/laravel-webhook-client) to retrieve and process the incoming Facebook Webhook. For initial Facebook authentication it uses [Laravel Socialite](https://socialiteproviders.com/Facebook/).
 On an incoming webhook, it retrieves the Lead data through the Facebook Graph API and sends an event on completion.
+You can specify which job should process the Lead data in the `process_facebook_webhook_job` in the `facebook-webhook` config file.
 
 ## Changelog
 
