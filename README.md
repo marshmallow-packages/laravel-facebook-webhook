@@ -42,7 +42,7 @@ Make sure to add the correct config for the Spatie Webhook Package:
 
 Please see the [Base Installation Guide](https://socialiteproviders.com/usage/), then follow the provider specific instructions below.
 
-### Add configuration to `config/services.php`
+## Add configuration to `config/services.php`
 
 ```php
 'facebook' => [
@@ -78,7 +78,7 @@ FACEBOOK_REDIRECT_URI= #'/auth/facebook'
 
 This is the contents of the file that will be published at `config/facebook-webhook.php`:
 
-````php
+```php
         'configs' => [
         [
             /*
@@ -121,6 +121,7 @@ This is the contents of the file that will be published at `config/facebook-webh
         ],
     ],
 ```
+
 ## Setup
 
 Create an Facebook app using the following instructions from [Facebook](https://developers.facebook.com/docs/development/register), make sure your app has the following permissions:
@@ -136,7 +137,7 @@ After setting up the migrations and the .env, run:
 
 ```bash
 php artisan marshmallow:setup-facebook
-````
+```
 
 ## Usage
 
