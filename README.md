@@ -30,7 +30,7 @@ To create the table that holds the webhook calls, you must publish the migration
 php artisan vendor:publish --provider="Spatie\WebhookClient\WebhookClientServiceProvider" --tag="migrations"
 ```
 
-Please see the [Base Installation Guide](https://socialiteproviders.com/usage/), then follow the provider specific instructions below.
+Please see the [Base Installation Guide](https://socialiteproviders.com/usage/), then follow the provider specific instructions below, please note: The envirionment variables are not named the same as on Socialite
 
 ### Add configuration to `config/services.php`
 
@@ -42,40 +42,16 @@ Please see the [Base Installation Guide](https://socialiteproviders.com/usage/),
 ],
 ```
 
-You can publish the config file with:
+You can publish the config & migration files with:
 
 ```bash
-php artisan vendor:publish --provider="Marshmallow\LaravelFacebookWebhook\LaravelFacebookWebhookServiceProvider" --tag="laravel-facebook-webhook-config"
+php artisan vendor:publish --provider="Marshmallow\LaravelFacebookWebhook\LaravelFacebookWebhookServiceProvider"
 ```
 
 After the migration has been published, you can create the `webhook_calls` table by running the migrations:
 
 ```bash
 php artisan migrate
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-    'configs' => [
-        [
-            'name' => 'facebook-lead',
-            'signing_secret' => env('FACEBOOK_APP_SECRET'),
-            'signature_header_name' => 'X-Hub-Signature',
-            'signature_validator' => \Marshmallow\LaravelFacebookWebhook\SignatureValidator\FacebookSignatureValidator::class,
-            'webhook_profile' => \Spatie\WebhookClient\WebhookProfile\ProcessEverythingWebhookProfile::class,
-            'webhook_response' => \Spatie\WebhookClient\WebhookResponse\DefaultRespondsTo::class,
-            'webhook_model' => \Spatie\WebhookClient\Models\WebhookCall::class,
-            'process_webhook_job' => \Marshmallow\LaravelFacebookWebhook\Jobs\ProcessFacebookLeadWebhookJob::class,
-            'callback_route' => env('FACEBOOK_CALLBACK_ROUTE'),
-            'graph_api_version' => 'v10.0',
-            'app_id' => env('FACEBOOK_APP_ID'),
-            'app_secret' => env('FACEBOOK_APP_SECRET'),
-            'page_id' => env('FACEBOOK_PAGE_ID'),
-        ],
-    ],
-];
 ```
 
 Make sure to have the following .env variables setup:
@@ -106,7 +82,6 @@ php artisan marshmallow:setup-facebook
 ```
 
 On an incoming webhook, it retrieves the Lead data through the Facebook Graph API and sends an event on completion.
-
 
 ## Changelog
 

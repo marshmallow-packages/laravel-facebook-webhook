@@ -13,7 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Marshmallow\LaravelFacebookWebhook\Models\WebhookLeadResponse;
 use Marshmallow\LaravelFacebookWebhook\Events\FacebookWebhookReceived;
 use Spatie\WebhookClient\ProcessWebhookJob as SpatieProcessWebhookJob;
-use Marshmallow\LaravelFacebookWebhook\Http\Controllers\FacebookTokenController;
+use Marshmallow\LaravelFacebookWebhook\Controllers\FacebookTokenController;
 
 class ProcessFacebookLeadWebhookJob extends SpatieProcessWebhookJob
 {

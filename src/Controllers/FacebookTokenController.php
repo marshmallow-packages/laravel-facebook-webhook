@@ -2,6 +2,7 @@
 
 namespace Marshmallow\LaravelFacebookWebhook\Controllers;
 
+use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -341,7 +342,7 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
             'type' => $type,
         ], $webhook_data);
 
-        FacebookWebhookReceived::dispatch($webhookLeadResponse);
+        $this->processFacebookLead($webhookLeadResponse);
     }
 
     public function verifyWebhookInstall(Request $request)
@@ -356,5 +357,17 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
             $returnToken = 'Invalid Verification';
         }
         echo $returnToken;
+    }
+
+
+    protected function processFacebookLead(WebhookLeadResponse $webhookLeadResponse): void
+    {
+        try {
+            $job = new $this->config['process_facebook_webhook_job']($webhookLeadResponse);
+            dispatch($job);
+            FacebookWebhookReceived::dispatch($webhookLeadResponse);
+        } catch (Exception $exception) {
+            throw $exception;
+        }
     }
 }
