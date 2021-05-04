@@ -1,6 +1,6 @@
 {
     "name": "marshmallow/laravel-facebook-webhook",
-    "description": "This is my package LaravelFacebookWebhook",
+    "description": "A package to retrieve Facebook Leads with webhooks & Graph API in Laravel. ",
     "keywords": [
         "marshmallow",
         "laravel",
