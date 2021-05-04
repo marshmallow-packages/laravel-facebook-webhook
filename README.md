@@ -105,6 +105,9 @@ After setting up the migrations and the .env, run:
 php artisan marshmallow:setup-facebook
 ```
 
+On an incoming webhook, it retrieves the Lead data through the Facebook Graph API and sends an event on completion.
+
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
