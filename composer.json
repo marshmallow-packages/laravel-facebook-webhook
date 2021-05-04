@@ -1,24 +1,28 @@
 {
-    "name": "vendor_slug/package_slug",
-    "description": ":package_description",
+    "name": "marshmallow/laravel-facebook-webhook",
+    "description": "This is my package LaravelFacebookWebhook",
     "keywords": [
-        ":vendor_name",
+        "marshmallow",
         "laravel",
-        "package_slug"
+        "laravel-facebook-webhook",
+        "facebook",
+        "leads",
+        "webhook"
     ],
-    "homepage": "https://github.com/vendor_slug/package_slug",
+    "homepage": "https://github.com/marshmallow/laravel-facebook-webhook",
     "license": "MIT",
-    "authors": [
-        {
-            "name": ":author_name",
-            "email": "author@domain.com",
-            "role": "Developer"
-        }
-    ],
+    "authors": [{
+        "name": "Marshmallow",
+        "email": "lars@marshmallow.dev",
+        "role": "Developer"
+    }],
     "require": {
-        "php": "^8.0",
+        "php": "^7.4|^8.0",
         "spatie/laravel-package-tools": "^1.4.3",
-        "illuminate/contracts": "^8.37"
+        "illuminate/contracts": "^8.37",
+        "laravel/socialite": "^5.2",
+        "socialiteproviders/facebook": "^4.1",
+        "spatie/laravel-webhook-client": "^2.7"
     },
     "require-dev": {
         "brianium/paratest": "^6.2",
@@ -30,13 +34,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Marshmallow\\LaravelFacebookWebhook\\": "src",
+            "Marshmallow\\LaravelFacebookWebhook\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "Marshmallow\\LaravelFacebookWebhook\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -50,10 +54,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Marshmallow\\LaravelFacebookWebhook\\LaravelFacebookWebhookServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\SkeletonFacade"
+                "LaravelFacebookWebhook": "Marshmallow\\LaravelFacebookWebhook\\LaravelFacebookWebhookFacade"
             }
         }
     },

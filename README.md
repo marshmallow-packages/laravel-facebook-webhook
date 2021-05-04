@@ -1,68 +1,83 @@
-# :package_description
+# Facebook Lead Webhook for Laravel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/vendor_slug/package_slug.svg?style=flat-square)](https://packagist.org/packages/vendor_slug/package_slug)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/vendor_slug/package_slug/run-tests?label=tests)](https://github.com/vendor_slug/package_slug/actions?query=workflow%3Arun-tests+branch%3Amaster)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/vendor_slug/package_slug/Check%20&%20fix%20styling?label=code%20style)](https://github.com/vendor_slug/package_slug/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/vendor_slug/package_slug.svg?style=flat-square)](https://packagist.org/packages/vendor_slug/package_slug)
-
----
-This repo can be used as to scaffold a Laravel package. Follow these steps to get started:
-
-1. Press the "Use template" button at the top of this repo to create a new repo with the contents of this skeleton
-2. Run "./configure-skeleton.sh" to run a script that will replace all placeholders throughout all the files
-3. Remove this block of text.
-4. Have fun creating your package.
-5. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/marshmallow/laravel-facebook-webhook.svg?style=flat-square)](https://packagist.org/packages/marshmallow/laravel-facebook-webhook)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/marshmallow-packages/laravel-facebook-webhook/run-tests?label=tests)](https://github.com/marshmallow-packages/laravel-facebook-webhook/actions?query=workflow%3Arun-tests+branch%3Amaster)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/marshmallow-packages/laravel-facebook-webhook/Check%20&%20fix%20styling?label=code%20style)](https://github.com/marshmallow-packages/laravel-facebook-webhook/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
+[![Total Downloads](https://img.shields.io/packagist/dt/marshmallow-packages/laravel-facebook-webhook.svg?style=flat-square)](https://packagist.org/packages/marshmallow-packages/laravel-facebook-webhook)
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require vendor_slug/package_slug
+composer require marshmallow/laravel-facebook-webhook
 ```
 
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --provider="VendorName\Skeleton\SkeletonServiceProvider" --tag="package_slug-migrations"
+php artisan vendor:publish --provider="Marshmallow\LaravelFacebookWebhook\LaravelFacebookWebhookServiceProvider" --tag="laravel-facebook-webhook-migrations"
 php artisan migrate
 ```
 
+This package uses [spatie/laravel-webhook-client](https://github.com/spatie/laravel-webhook-client) & [Laravel Socialite](https://socialiteproviders.com/Facebook/)
+Please read the instructions from both packages & publish the migrations from [spatie/laravel-webhook-client](https://github.com/spatie/laravel-webhook-client)
+
 You can publish the config file with:
+
 ```bash
-php artisan vendor:publish --provider="VendorName\Skeleton\SkeletonServiceProvider" --tag="package_slug-config"
+php artisan vendor:publish --provider="Marshmallow\LaravelFacebookWebhook\LaravelFacebookWebhookServiceProvider" --tag="laravel-facebook-webhook-config"
 ```
 
 This is the contents of the published config file:
 
 ```php
 return [
+    'configs' => [
+        [
+            'name' => 'facebook-lead',
+            'signing_secret' => env('FACEBOOK_APP_SECRET'),
+            'signature_header_name' => 'X-Hub-Signature',
+            'signature_validator' => \Marshmallow\LaravelFacebookWebhook\SignatureValidator\FacebookSignatureValidator::class,
+            'webhook_profile' => \Spatie\WebhookClient\WebhookProfile\ProcessEverythingWebhookProfile::class,
+            'webhook_response' => \Spatie\WebhookClient\WebhookResponse\DefaultRespondsTo::class,
+            'webhook_model' => \Spatie\WebhookClient\Models\WebhookCall::class,
+            'process_webhook_job' => \Marshmallow\LaravelFacebookWebhook\Jobs\ProcessFacebookLeadWebhookJob::class,
+            'callback_route' => env('FACEBOOK_CALLBACK_ROUTE'),
+            'graph_api_version' => 'v10.0',
+            'app_id' => env('FACEBOOK_APP_ID'),
+            'app_secret' => env('FACEBOOK_APP_SECRET'),
+            'page_id' => env('FACEBOOK_PAGE_ID'),
+        ],
+    ],
 ];
+```
+
+Make sure to have the following .env variables setup:
+
+```php
+FACEBOOK_CALLBACK_ROUTE= #Default set 'webhook-client-facebook-lead'
+FACEBOOK_APP_ID=
+FACEBOOK_APP_SECRET=
+FACEBOOK_PAGE_ID=
+FACEBOOK_REDIRECT_URI= #'/auth/facebook'
 ```
 
 ## Usage
 
-```php
-$skeleton = new VendorName\Skeleton();
-echo $skeleton->echoPhrase('Hello, Spatie!');
-```
+Create an Facebook app using the following instructions from [Facebook](https://developers.facebook.com/docs/development/register), make sure your app has the following permissions:
+A Page or User access token requested by a person who can advertise on the ad account and on the Page
 
-## Testing
+-   The ads_management permission
+-   The leads_retrieval permission
+-   The pages_show_list permission
+-   The pages_read_engagement permission
+-   The pages_manage_ads permission
+
+After setting up the migrations and the .env, run:
 
 ```bash
-composer test
+php artisan marshmallow:setup-facebook
 ```
 
 ## Changelog
@@ -79,8 +94,9 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
-- [All Contributors](../../contributors)
+-   [Marshmallow](https://github.com/marshmallow-packages)
+-   [Spatie](https://github.com/spatie)
+-   [All Contributors](../../contributors)
 
 ## License
 
