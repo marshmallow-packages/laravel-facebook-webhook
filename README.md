@@ -3,7 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/marshmallow/laravel-facebook-webhook.svg?style=flat-square)](https://packagist.org/packages/marshmallow/laravel-facebook-webhook)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/marshmallow-packages/laravel-facebook-webhook/run-tests?label=tests)](https://github.com/marshmallow-packages/laravel-facebook-webhook/actions?query=workflow%3Arun-tests+branch%3Amaster)
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/marshmallow-packages/laravel-facebook-webhook/Check%20&%20fix%20styling?label=code%20style)](https://github.com/marshmallow-packages/laravel-facebook-webhook/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/marshmallow-packages/laravel-facebook-webhook.svg?style=flat-square)](https://packagist.org/packages/marshmallow-packages/laravel-facebook-webhook)
+[![Total Downloads](https://img.shields.io/packagist/dt/marshmallow/laravel-facebook-webhook.svg?style=flat-square)](https://packagist.org/packages/marshmallow/laravel-facebook-webhook)
 
 ## Installation
 
