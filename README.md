@@ -13,13 +13,6 @@ You can install the package via composer:
 composer require marshmallow/laravel-facebook-webhook
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --provider="Marshmallow\LaravelFacebookWebhook\LaravelFacebookWebhookServiceProvider" --tag="laravel-facebook-webhook-migrations"
-php artisan migrate
-```
-
 This package uses [spatie/laravel-webhook-client](https://github.com/spatie/laravel-webhook-client) & [Laravel Socialite](https://socialiteproviders.com/Facebook/)
 Please read the instructions from both packages!
 
@@ -42,7 +35,7 @@ Make sure to add the correct config for the Spatie Webhook Package:
 
 Please see the [Base Installation Guide](https://socialiteproviders.com/usage/), then follow the provider specific instructions below.
 
-## Add configuration to `config/services.php`
+## Add configuration to config/services.php
 
 ```php
 'facebook' => [
@@ -148,7 +141,20 @@ You can specify which job should process the Lead data in the `process_facebook_
 For example make a Job:
 
 ```php
-    'process_facebook_webhook_job' => \App\Jobs\ProcessFacebookDataJob::class,
+    use Marshmallow\LaravelFacebookWebhook\Jobs\ProcessFacebookLeadJob as MarshmallowWebhookJob;
+
+    class ProcessFacebookDataJob extends MarshmallowWebhookJob
+    {
+        /**
+         * Execute the job.
+         *
+         * @return void
+         */
+        public function handle()
+        {
+            ray($this->webhookData);
+        }
+    }
 ```
 
 And add it to the config:
