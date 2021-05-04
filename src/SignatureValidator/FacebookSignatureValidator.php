@@ -12,7 +12,6 @@ class FacebookSignatureValidator implements SignatureValidator
     public function isValid(Request $request, WebhookConfig $config): bool
     {
         $signature = $request->header($config->signatureHeaderName);
-        $signingSecret = $config->signingSecret;
 
         if (
             strlen($signature) == 45 &&
@@ -26,7 +25,6 @@ class FacebookSignatureValidator implements SignatureValidator
         }
 
         $signingSecret = $config->signingSecret;
-
         if (empty($signingSecret)) {
             throw WebhookFailed::signingSecretNotSet();
         }

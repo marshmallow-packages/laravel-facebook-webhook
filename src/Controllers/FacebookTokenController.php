@@ -348,7 +348,7 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
     public function verifyWebhookInstall(Request $request)
     {
         $content = $request->all();
-        $challengeToken = $this->config['signing_secret'];
+        $challengeToken = $this->clientSecret;
         if (
             isset($content['hub_verify_token']) && $content['hub_verify_token'] == $challengeToken
         ) {

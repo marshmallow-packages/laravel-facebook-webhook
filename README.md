@@ -30,6 +30,16 @@ To create the table that holds the webhook calls, you must publish the migration
 php artisan vendor:publish --provider="Spatie\WebhookClient\WebhookClientServiceProvider" --tag="migrations"
 ```
 
+Make sure to add the correct config for the Spatie Webhook Package:
+
+```php
+'name' => 'facebook-lead',
+'signing_secret' => env('FACEBOOK_CLIENT_SECRET'),
+'signature_header_name' => 'X-Hub-Signature',
+'signature_validator' => \Marshmallow\LaravelFacebookWebhook\SignatureValidator\FacebookSignatureValidator::class,
+'process_webhook_job' => \Marshmallow\LaravelFacebookWebhook\Jobs\ProcessFacebookLeadWebhookJob::class,
+```
+
 Please see the [Base Installation Guide](https://socialiteproviders.com/usage/), then follow the provider specific instructions below.
 
 ### Add configuration to `config/services.php`
@@ -64,6 +74,53 @@ FACEBOOK_PAGE_ID=
 FACEBOOK_REDIRECT_URI= #'/auth/facebook'
 ```
 
+## Config
+
+This is the contents of the file that will be published at `config/facebook-webhook.php`:
+
+````php
+        'configs' => [
+        [
+            /*
+             * This package supports multiple webhook receiving endpoints. If you only have
+             * one endpoint receiving webhooks, you can use 'default'.
+             */
+            'name' => 'facebook-lead',
+
+            /*
+             * The class name of the job that will process the Facebook Lead Data.
+             *
+             * This should be set to a class that extends \Marshmallow\LaravelFacebookWebhook\Jobs\ProcessFacebookLeadJob,
+             */
+            'process_facebook_webhook_job' => '',
+
+            /*
+             * The callback route name from Facebook Leads .
+             */
+            'callback_route' => env('FACEBOOK_CALLBACK_ROUTE', 'webhook-client-facebook-lead'),
+
+            /*
+             * The graph api version for Facebook  .
+             */
+            'graph_api_version' => 'v10.0',
+
+            /*
+             * The App ID from the Facebook App.
+             */
+            'app_id' => env('FACEBOOK_CLIENT_ID'),
+
+            /*
+             * The App Secret from the Facebook App.
+             */
+            'app_secret' => env('FACEBOOK_CLIENT_SECRET'),
+
+            /*
+             * The Page ID to retrieve the leads from.
+             */
+            'page_id' => env('FACEBOOK_PAGE_ID'),
+        ],
+    ],
+```
 ## Setup
 
 Create an Facebook app using the following instructions from [Facebook](https://developers.facebook.com/docs/development/register), make sure your app has the following permissions:
@@ -79,13 +136,25 @@ After setting up the migrations and the .env, run:
 
 ```bash
 php artisan marshmallow:setup-facebook
-```
+````
 
 ## Usage
 
 This package uses [spatie/laravel-webhook-client](https://github.com/spatie/laravel-webhook-client) to retrieve and process the incoming Facebook Webhook. For initial Facebook authentication it uses [Laravel Socialite](https://socialiteproviders.com/Facebook/).
 On an incoming webhook, it retrieves the Lead data through the Facebook Graph API and sends an event on completion.
 You can specify which job should process the Lead data in the `process_facebook_webhook_job` in the `facebook-webhook` config file.
+
+For example make a Job:
+
+```php
+    'process_facebook_webhook_job' => \App\Jobs\ProcessFacebookDataJob::class,
+```
+
+And add it to the config:
+
+```php
+    'process_facebook_webhook_job' => \App\Jobs\ProcessFacebookDataJob::class,
+```
 
 ## Changelog
 
@@ -108,3 +177,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+```
+
+```
