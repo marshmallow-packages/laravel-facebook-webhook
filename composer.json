@@ -18,10 +18,10 @@
     }],
     "require": {
         "php": "^7.4|^8.0",
-        "spatie/laravel-package-tools": "^1.4.3",
         "illuminate/contracts": "^8.37",
         "laravel/socialite": "^5.2",
         "socialiteproviders/facebook": "^4.1",
+        "spatie/laravel-package-tools": "^1.4.3",
         "spatie/laravel-webhook-client": "^2.7"
     },
     "require-dev": {
@@ -34,8 +34,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Marshmallow\\LaravelFacebookWebhook\\": "src",
-            "Marshmallow\\LaravelFacebookWebhook\\Database\\Factories\\": "database/factories"
+            "Marshmallow\\LaravelFacebookWebhook\\": "src"
         }
     },
     "autoload-dev": {
@@ -55,10 +54,7 @@
         "laravel": {
             "providers": [
                 "Marshmallow\\LaravelFacebookWebhook\\LaravelFacebookWebhookServiceProvider"
-            ],
-            "aliases": {
-                "LaravelFacebookWebhook": "Marshmallow\\LaravelFacebookWebhook\\LaravelFacebookWebhookFacade"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",

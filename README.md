@@ -21,12 +21,37 @@ php artisan migrate
 ```
 
 This package uses [spatie/laravel-webhook-client](https://github.com/spatie/laravel-webhook-client) & [Laravel Socialite](https://socialiteproviders.com/Facebook/)
-Please read the instructions from both packages & publish the migrations from [spatie/laravel-webhook-client](https://github.com/spatie/laravel-webhook-client)
+Please read the instructions from both packages!
+
+Publish the migrations from [spatie/laravel-webhook-client](https://github.com/spatie/laravel-webhook-client)
+To create the table that holds the webhook calls, you must publish the migration with:
+
+```bash
+php artisan vendor:publish --provider="Spatie\WebhookClient\WebhookClientServiceProvider" --tag="migrations"
+```
+
+Please see the [Base Installation Guide](https://socialiteproviders.com/usage/), then follow the provider specific instructions below.
+
+### Add configuration to `config/services.php`
+
+```php
+'facebook' => [
+  'client_id' => env('FACEBOOK_CLIENT_ID'),
+  'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+  'redirect' => env('FACEBOOK_REDIRECT_URI')
+],
+```
 
 You can publish the config file with:
 
 ```bash
 php artisan vendor:publish --provider="Marshmallow\LaravelFacebookWebhook\LaravelFacebookWebhookServiceProvider" --tag="laravel-facebook-webhook-config"
+```
+
+After the migration has been published, you can create the `webhook_calls` table by running the migrations:
+
+```bash
+php artisan migrate
 ```
 
 This is the contents of the published config file:
