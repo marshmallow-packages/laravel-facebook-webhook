@@ -185,7 +185,7 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
             'object' => 'page',
             'fields' => 'leadgen',
             'callback_url' => route($this->callback_route),
-            'verify_token' => $this->config['signing_secret']
+            'verify_token' => $this->clientSecret
         ];
         $response = $this->facebook('POST', $endpoint, $fields);
 
