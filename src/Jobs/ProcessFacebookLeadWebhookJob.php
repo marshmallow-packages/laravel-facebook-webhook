@@ -10,8 +10,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Marshmallow\LaravelFacebookWebhook\Models\WebhookLeadResponse;
-use Marshmallow\LaravelFacebookWebhook\Events\FacebookWebhookReceived;
 use Spatie\WebhookClient\ProcessWebhookJob as SpatieProcessWebhookJob;
 use Marshmallow\LaravelFacebookWebhook\Controllers\FacebookTokenController;
 
@@ -39,7 +37,7 @@ class ProcessFacebookLeadWebhookJob extends SpatieProcessWebhookJob
             $tokenController->storeWebhookResponse($webhookResponse, $this->webhookCall['name']);
         }
 
-        $this->webhookCall->delete();
+        // $this->webhookCall->delete();
 
         return;
     }

@@ -278,7 +278,7 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
             $access_token       = $token_response['access_token'];
             $facebook_user      = Socialite::driver('facebook')->userFromToken($access_token);
         } catch (\Exception $exception) {
-            throw new \Exception('Something went wrong with authentication on Facebook', $exception);
+            throw new \Exception('Something went wrong with authentication on Facebook', 2);
         }
 
         if (empty($token_response['expires_in'])) {
@@ -362,12 +362,9 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
 
     protected function processFacebookLead(WebhookLeadResponse $webhookLeadResponse): void
     {
-        try {
-            $job = new $this->config['process_facebook_webhook_job']($webhookLeadResponse);
-            dispatch($job);
-            FacebookWebhookReceived::dispatch($webhookLeadResponse);
-        } catch (Exception $exception) {
-            throw $exception;
-        }
+        $jobclass = $this->config['process_facebook_webhook_job'];
+        $job = new $jobclass($webhookLeadResponse);
+        dispatch($job)->delay(now()->addMinutes(1));
+        FacebookWebhookReceived::dispatch($webhookLeadResponse);
     }
 }
