@@ -5,6 +5,7 @@ namespace Marshmallow\LaravelFacebookWebhook;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Spatie\WebhookClient\Http\Controllers\WebhookController;
 use Marshmallow\LaravelFacebookWebhook\Commands\LaravelFacebookWebhookCommand;
 
 class LaravelFacebookWebhookServiceProvider extends PackageServiceProvider
@@ -16,7 +17,7 @@ class LaravelFacebookWebhookServiceProvider extends PackageServiceProvider
          *
          * More info: https://github.com/spatie/laravel-package-tools
          */
-        Route::macro('webhooks', fn (string $url, string $name = 'default') => Route::post($url, '\Spatie\WebhookClient\WebhookController')->name("webhook-client-{$name}"));
+        Route::macro('webhooks', fn (string $url, string $name = 'default') => Route::post($url, WebhookController::class)->name("webhook-client-{$name}"));
 
         $package
             ->name('laravel-facebook-webhook')
