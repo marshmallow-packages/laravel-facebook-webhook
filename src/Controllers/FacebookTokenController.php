@@ -419,7 +419,7 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
         return $this->facebookPaginate('GET', $url);
     }
 
-    public function getLeadsByForm($form_id, $offsetDays = 1)
+    public function getLeadsByForm($form_id, $offsetDays = 1, $processLeads = true)
     {
         $url = "/" . $form_id . "/leads";
 
@@ -452,12 +452,12 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
             options: $options,
         );
 
-        collect($api_leads)->map(function ($api_lead) {
-            $this->storeApiResponse($api_lead);
+        collect($api_leads)->map(function ($api_lead) use ($processLeads) {
+            $this->storeApiResponse($api_lead, $processLeads);
         });
     }
 
-    public function storeApiResponse($api_data)
+    public function storeApiResponse($api_data, $processLead = true)
     {
         $type = 'facebook-lead';
         $lead_id = $api_data['id'];
@@ -483,6 +483,8 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
             'type' => $type,
         ], $api_data);
 
-        $this->processFacebookLead($leadResponse);
+        if ($processLead) {
+            $this->processFacebookLead($leadResponse);
+        }
     }
 }
