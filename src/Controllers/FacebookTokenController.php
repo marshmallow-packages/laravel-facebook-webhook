@@ -5,6 +5,7 @@ namespace Marshmallow\LaravelFacebookWebhook\Controllers;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -145,19 +146,60 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
      *
      * @return \GuzzleHttp\Client
      */
-    protected function facebook($method, $url, $options = [], $extras = null)
+    protected function facebook($method, $url, $options = [], $paginate = false)
     {
-        $url = $this->getBaseUri() . $url;
-        $options = Arr::prepend($options, $this->lastToken, 'access_token');
-        $response = Http::$method($url, $options);
+        if (!Str::startsWith($url, $this->graphUrl)) {
+            $url = $this->getBaseUri() . $url;
+            $options = Arr::add($options, 'access_token', $this->lastToken);
+        }
+
+        if ($options) {
+            $response = Http::$method($url, $options);
+        } else {
+            $response = Http::$method($url);
+        }
+
         if ($response->successful()) {
-            if (isset($response->json()['data'])) {
-                return $response->json()['data'];
+            $data = $response->json();
+            if ($paginate) {
+                return $data;
             }
-            return $response->json();
+            if (isset($data['data'])) {
+                return $data['data'];
+            }
+            return $data;
         } else {
             $response->throw();
         }
+    }
+
+
+    protected function facebookPaginate($method, $url, $options = [], $previousData = [], $offset = 0)
+    {
+        $response = $this->facebook(
+            method: $method,
+            url: $url,
+            options: $options,
+            paginate: true
+        );
+
+        $reponseData = $previousData;
+        $data = Arr::get($response, 'data');
+        $next = Arr::get($response, 'paging.next');
+
+        if ($data) {
+            $reponseData = array_merge($previousData, $data);
+        }
+
+        if ($next) {
+            return $this->facebookPaginate(
+                method: $method,
+                url: $next,
+                previousData: $reponseData,
+            );
+        }
+
+        return $reponseData;
     }
 
     public function installApp()
