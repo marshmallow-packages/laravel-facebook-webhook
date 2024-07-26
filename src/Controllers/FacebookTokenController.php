@@ -204,7 +204,7 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
     public function getRedirectUrl()
     {
         return Socialite::driver('facebook')->scopes(
-            ['pages_read_engagement', 'leads_retrieval', 'pages_manage_metadata', 'pages_show_list', 'ads_management']
+            ['pages_read_engagement', 'leads_retrieval', 'pages_manage_metadata', 'pages_manage_ads', 'pages_show_list', 'ads_management']
         )->stateless()->redirect()->getTargetUrl();
     }
 
@@ -366,5 +366,14 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
         $job = new $jobclass($webhookLeadResponse);
         dispatch($job)->delay(now()->addMinutes(1));
         FacebookWebhookReceived::dispatch($webhookLeadResponse);
+    }
+
+    /**
+     * Obtain the forms & leads from Facebook API.
+     */
+    public function getForms()
+    {
+        $url = "/" . $this->pageId . "/leadgen_forms";
+        return $this->facebook('GET', $url);
     }
 }
