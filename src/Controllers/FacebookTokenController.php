@@ -418,4 +418,44 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
         $url = "/" . $this->pageId . "/leadgen_forms";
         return $this->facebook('GET', $url);
     }
+
+    public function getLeadsByForm($form_id, $offsetDays = 1)
+    {
+        $url = "/" . $form_id . "/leads";
+
+        $fields = [
+            'id',
+            'created_time',
+            'field_data',
+            'adgroup_id',
+            'ad_id',
+            'form_id',
+        ];
+
+        $time = Carbon::now()->subDays($offsetDays)->timestamp;
+
+        $options = [
+            'fields' => implode(',', $fields),
+            'limit' => 50,
+            'filtering' => [
+                [
+                    'field' => 'time_created',
+                    'operator' => 'GREATER_THAN_OR_EQUAL',
+                    'value' => $time,
+                ],
+            ],
+        ];
+
+        $api_leads = $this->facebookPaginate(
+            method: 'GET',
+            url: $url,
+            options: $options,
+        );
+
+        collect($api_leads)->map(function ($api_lead) {
+            $this->storeApiResponse($api_lead);
+        });
+
+        return $api_leads;
+    }
 }
