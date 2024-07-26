@@ -24,7 +24,7 @@ return [
             /*
              * The graph api version for Facebook  .
              */
-            'graph_api_version' => 'v10.0',
+            'graph_api_version' => 'v14.0',
 
             /*
              * The App ID from the Facebook App.
