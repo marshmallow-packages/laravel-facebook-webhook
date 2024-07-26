@@ -432,7 +432,7 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
             'form_id',
         ];
 
-        $time = Carbon::now()->subDays($offsetDays)->timestamp;
+        $time = Carbon::now()->subDays($offsetDays)->startOfDay()->timestamp;
 
         $options = [
             'fields' => implode(',', $fields),
