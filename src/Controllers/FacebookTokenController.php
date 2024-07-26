@@ -416,10 +416,10 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
     public function getForms()
     {
         $url = "/" . $this->pageId . "/leadgen_forms";
-        return $this->facebook('GET', $url);
+        return $this->facebookPaginate('GET', $url);
     }
 
-    public function getLeadsByForm($form_id, $offsetDays = 1)
+    public function getLeadsByForm($form_id, $offsetDays = 1, $processLeads = true)
     {
         $url = "/" . $form_id . "/leads";
 
@@ -432,7 +432,7 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
             'form_id',
         ];
 
-        $time = Carbon::now()->subDays($offsetDays)->timestamp;
+        $time = Carbon::now()->subDays($offsetDays)->startOfDay()->timestamp;
 
         $options = [
             'fields' => implode(',', $fields),
@@ -452,10 +452,39 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
             options: $options,
         );
 
-        collect($api_leads)->map(function ($api_lead) {
-            $this->storeApiResponse($api_lead);
+        collect($api_leads)->map(function ($api_lead) use ($processLeads) {
+            $this->storeApiResponse($api_lead, $processLeads);
         });
+    }
 
-        return $api_leads;
+    public function storeApiResponse($api_data, $processLead = true)
+    {
+        $type = 'facebook-lead';
+        $lead_id = $api_data['id'];
+        $payload = $api_data;
+
+        $api_data['type'] = $type;
+        $api_data['received_at'] = Carbon::parse($api_data['created_time']);
+        $api_data['leadgen_id'] = $lead_id;
+        $api_data['page_id'] = $this->pageId;
+
+        unset($api_data['field_data']);
+        unset($api_data['id']);
+        unset($api_data['created_time']);
+
+        if ($lead_id !== "444444444444") {
+            $api_data['payload'] = json_encode($payload);
+        }
+
+        $leadResponse = WebhookLeadResponse::firstOrCreate([
+            'leadgen_id' => $lead_id,
+            'ad_id' => $api_data['ad_id'],
+            'form_id' => $api_data['form_id'],
+            'type' => $type,
+        ], $api_data);
+
+        if ($processLead) {
+            $this->processFacebookLead($leadResponse);
+        }
     }
 }
