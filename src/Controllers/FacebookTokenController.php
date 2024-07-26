@@ -478,7 +478,7 @@ class FacebookTokenController extends \App\Http\Controllers\Controller
 
         $leadResponse = WebhookLeadResponse::firstOrCreate([
             'leadgen_id' => $lead_id,
-            'ad_id' => $api_data['ad_id'],
+            // 'ad_id' => $api_data['ad_id'],
             'form_id' => $api_data['form_id'],
             'type' => $type,
         ], $api_data);
